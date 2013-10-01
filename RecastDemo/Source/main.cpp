@@ -21,6 +21,7 @@
 #include <math.h>
 #include "SDL.h"
 #include "SDL_opengl.h"
+#include <GL/glu.h>
 #include "imgui.h"
 #include "imguiRenderGL.h"
 #include "Recast.h"
@@ -86,36 +87,39 @@ int main(int /*argc*/, char** /*argv*/)
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 //#endif
 
-	const SDL_VideoInfo* vi = SDL_GetVideoInfo();
-
+	const char windowTitle[] = "Recast Demo";
 	bool presentationMode = false;
-
-	int width, height;
-	SDL_Surface* screen = 0;
+	SDL_Window* window = 0;
 	
 	if (presentationMode)
 	{
-		width = vi->current_w;
-		height = vi->current_h;
-		screen = SDL_SetVideoMode(width, height, 0, SDL_OPENGL|SDL_FULLSCREEN);
+		window = SDL_CreateWindow(windowTitle, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_OPENGL);
 	}
 	else
-	{	
-		width = vi->current_w - 20;
-		height = vi->current_h - 80;
-		screen = SDL_SetVideoMode(width, height, 0, SDL_OPENGL);
+	{
+		SDL_Rect bounds;
+		SDL_GetDisplayBounds(0, &bounds);
+		window = SDL_CreateWindow(windowTitle, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, bounds.w - 80, bounds.h - 80, SDL_WINDOW_OPENGL);
 	}
 	
-	if (!screen)
+	if (!window)
 	{
-		printf("Could not initialise SDL opengl\n");
+		printf("Could not initialise window\n");
 		return -1;
 	}
 
+	SDL_GLContext glContext = SDL_GL_CreateContext(window);
+	if (!glContext)
+	{
+		printf("Could not initialise opengl\n");
+		return -1;
+	}
+
+	int width, height;
+	SDL_GetWindowSize(window, &width, &height);
+
 	glEnable(GL_MULTISAMPLE);
 
-	SDL_WM_SetCaption("Recast Demo", 0);
-	
 	if (!imguiRenderGLInit("DroidSans.ttf"))
 	{
 		printf("Could not init GUI renderer.\n");
@@ -295,20 +299,6 @@ int main(int /*argc*/, char** /*argv*/)
 							origry = ry;
 						}
 					}	
-					else if (event.button.button == SDL_BUTTON_WHEELUP)
-					{
-						if (mouseOverMenu)
-							mscroll--;
-						else
-							scrollZoom -= 1.0f;
-					}
-					else if (event.button.button == SDL_BUTTON_WHEELDOWN)
-					{
-						if (mouseOverMenu)
-							mscroll++;
-						else
-							scrollZoom += 1.0f;
-					}
 					break;
 					
 				case SDL_MOUSEBUTTONUP:
@@ -350,6 +340,24 @@ int main(int /*argc*/, char** /*argv*/)
 					}
 					break;
 					
+				case SDL_MOUSEWHEEL:
+						if (event.wheel.y > 0)
+						{
+							if (mouseOverMenu)
+								mscroll--;
+							else
+								scrollZoom -= 1.0f;
+						}
+						else if (event.wheel.y < 0)
+						{
+							if (mouseOverMenu)
+								mscroll++;
+							else
+								scrollZoom += 1.0f;
+						}
+
+					break;
+
 				case SDL_QUIT:
 					done = true;
 					break;
@@ -467,11 +475,11 @@ int main(int /*argc*/, char** /*argv*/)
 		raye[0] = (float)x; raye[1] = (float)y; raye[2] = (float)z;
 		
 		// Handle keyboard movement.
-		Uint8* keystate = SDL_GetKeyState(NULL);
-		moveW = rcClamp(moveW + dt * 4 * (keystate[SDLK_w] ? 1 : -1), 0.0f, 1.0f);
-		moveS = rcClamp(moveS + dt * 4 * (keystate[SDLK_s] ? 1 : -1), 0.0f, 1.0f);
-		moveA = rcClamp(moveA + dt * 4 * (keystate[SDLK_a] ? 1 : -1), 0.0f, 1.0f);
-		moveD = rcClamp(moveD + dt * 4 * (keystate[SDLK_d] ? 1 : -1), 0.0f, 1.0f);
+		const Uint8* keystate = SDL_GetKeyboardState(NULL);
+		moveW = rcClamp(moveW + dt * 4 * (keystate[SDL_SCANCODE_W] ? 1 : -1), 0.0f, 1.0f);
+		moveS = rcClamp(moveS + dt * 4 * (keystate[SDL_SCANCODE_S] ? 1 : -1), 0.0f, 1.0f);
+		moveA = rcClamp(moveA + dt * 4 * (keystate[SDL_SCANCODE_A] ? 1 : -1), 0.0f, 1.0f);
+		moveD = rcClamp(moveD + dt * 4 * (keystate[SDL_SCANCODE_D] ? 1 : -1), 0.0f, 1.0f);
 		
 		float keybSpeed = 22.0f;
 		if (SDL_GetModState() & KMOD_SHIFT)
@@ -922,10 +930,11 @@ int main(int /*argc*/, char** /*argv*/)
 		imguiRenderGLDraw();		
 		
 		glEnable(GL_DEPTH_TEST);
-		SDL_GL_SwapBuffers();
+		SDL_GL_SwapWindow(window);
 	}
 	
 	imguiRenderGLDestroy();
+	SDL_GL_DeleteContext(glContext);
 	
 	SDL_Quit();
 	

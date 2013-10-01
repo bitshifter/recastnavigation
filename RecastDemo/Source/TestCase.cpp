@@ -20,12 +20,11 @@
 #include <ctype.h>
 #include <string.h>
 #include <math.h>
+#include <GL/glu.h>
 #include "TestCase.h"
 #include "DetourNavMesh.h"
 #include "DetourNavMeshQuery.h"
 #include "DetourCommon.h"
-#include "SDL.h"
-#include "SDL_opengl.h"
 #include "imgui.h"
 #include "PerfTimer.h"
 
