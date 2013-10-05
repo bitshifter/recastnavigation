@@ -90,16 +90,21 @@ int main(int /*argc*/, char** /*argv*/)
 	const char windowTitle[] = "Recast Demo";
 	bool presentationMode = false;
 	SDL_Window* window = 0;
-	
+
 	if (presentationMode)
 	{
-		window = SDL_CreateWindow(windowTitle, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_OPENGL);
+		window = SDL_CreateWindow(windowTitle,
+			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0,
+			SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
 	else
 	{
 		SDL_Rect bounds;
 		SDL_GetDisplayBounds(0, &bounds);
-		window = SDL_CreateWindow(windowTitle, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, bounds.w - 80, bounds.h - 80, SDL_WINDOW_OPENGL);
+		window = SDL_CreateWindow(windowTitle,
+			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+			bounds.w - 80, bounds.h - 80,
+			SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 	}
 	
 	if (!window)
@@ -341,21 +346,28 @@ int main(int /*argc*/, char** /*argv*/)
 					break;
 					
 				case SDL_MOUSEWHEEL:
-						if (event.wheel.y > 0)
-						{
-							if (mouseOverMenu)
-								mscroll--;
-							else
-								scrollZoom -= 1.0f;
-						}
-						else if (event.wheel.y < 0)
-						{
-							if (mouseOverMenu)
-								mscroll++;
-							else
-								scrollZoom += 1.0f;
-						}
+					if (event.wheel.y > 0)
+					{
+						if (mouseOverMenu)
+							mscroll--;
+						else
+							scrollZoom -= 1.0f;
+					}
+					else if (event.wheel.y < 0)
+					{
+						if (mouseOverMenu)
+							mscroll++;
+						else
+							scrollZoom += 1.0f;
+					}
+					break;
 
+				case SDL_WINDOWEVENT:
+					if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+					{
+						width = event.window.data1;
+						height = event.window.data2;
+					}
 					break;
 
 				case SDL_QUIT:
