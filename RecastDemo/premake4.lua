@@ -139,12 +139,12 @@ project "RecastDemo"
 	-- linux library cflags and libs
 	configuration { "linux", "gmake" }
 		buildoptions { 
-			"`pkg-config --cflags sdl`",
+			"`pkg-config --cflags sdl2`",
 			"`pkg-config --cflags gl`",
 			"`pkg-config --cflags glu`" 
 		}
 		linkoptions { 
-			"`pkg-config --libs sdl`",
+			"`pkg-config --libs sdl2`",
 			"`pkg-config --libs gl`",
 			"`pkg-config --libs glu`" 
 		}
