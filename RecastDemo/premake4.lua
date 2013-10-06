@@ -147,13 +147,13 @@ project "RecastDemo"
 
 	-- windows library cflags and libs
 	configuration { "windows" }
-		includedirs { "../RecastDemo/Contrib/SDL/include" }
-		libdirs { "../RecastDemo/Contrib/SDL/lib/x86" }
+		includedirs { "../RecastDemo/Contrib/SDL2/include" }
+		libdirs { "../RecastDemo/Contrib/SDL2/lib/x86" }
 		links { 
 			"opengl32",
 			"glu32",
-			"sdlmain",
-			"sdl"
+			"sdl2main",
+			"sdl2"
 		}
 
 	-- mac includes and libs

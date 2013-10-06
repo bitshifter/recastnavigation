@@ -31,5 +31,9 @@ Thumbs.db
 ## xcode specific
 *xcuserdata*
 
+## Vim specific
+*~
+*.swp
+
 ## SDL contrib
-RecastDemo/Contrib/SDL/*
+RecastDemo/Contrib/SDL2/*

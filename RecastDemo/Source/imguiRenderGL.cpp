@@ -18,6 +18,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <stdio.h>
 #include "imgui.h"
 #include "SDL.h"
 #include "SDL_opengl.h"

@@ -38,7 +38,6 @@
 
 #ifdef WIN32
 #	define snprintf _snprintf
-#	define putenv _putenv
 #endif
 
 struct SampleItem
@@ -71,10 +70,6 @@ int main(int /*argc*/, char** /*argv*/)
 		return -1;
 	}
 	
-	// Center window
-	char env[] = "SDL_VIDEO_CENTERED=1";
-	putenv(env);
-
 	// Init OpenGL
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);

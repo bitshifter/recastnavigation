@@ -20,6 +20,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <math.h>
+#include "SDL_opengl.h"
 #include <GL/glu.h>
 #include "TestCase.h"
 #include "DetourNavMesh.h"

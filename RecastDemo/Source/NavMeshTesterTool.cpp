@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "SDL_opengl.h"
 #include <GL/glu.h>
 #include "imgui.h"
 #include "NavMeshTesterTool.h"
@@ -1296,7 +1297,7 @@ void NavMeshTesterTool::handleRender()
 		for (int i = 0; i < m_nrandPoints; i++)
 		{
 			const float* p = &m_randPoints[i*3];
-			dd.vertex(p[0],p[1]+0.1,p[2], duRGBA(220,32,16,192));
+			dd.vertex(p[0],p[1]+0.1f,p[2], duRGBA(220,32,16,192));
 		} 
 		dd.end();
 		
